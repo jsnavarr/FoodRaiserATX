@@ -46,16 +46,20 @@
         </thead>
         <tbody>
           {% for meal in req_meals %}
-            <tr>
+            <tr class="meal_row"
+            {% if forloop.counter > 2 %}
+              style="display: none;"
+            {% endif %}
+            >
               <td>{{meal.description}}</td>
               <td>{{meal.available_on}}</td>
               <td>{{meal.available_time}}</td>
               <td>
-              <form action="{% url 'cancel_req_meal' meal.id %}" method="post">
-                {% csrf_token %}
-                <input type="submit" class="btn-flat #a1887f brown lighten-2" value="Cancel Request">
-              </form>
-            </td>
+                <form action="{% url 'cancel_req_meal' meal.id %}" method="post">
+                  {% csrf_token %}
+                  <input type="submit" class="btn-flat #a1887f brown lighten-2" value="Cancel Request">
+                </form>
+              </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -68,6 +72,11 @@
         </thead>
         <tbody>
           {% for meal in meals %}
+            <tr class="meal_row"
+            {% if forloop.counter > 2 %}
+              style="display: none;"
+            {% endif %}
+            >
               <td>{{meal.description}}</td>
               <td>{{meal.available_on}}</td>
               <td>{{meal.available_time}}</td>
@@ -83,13 +92,36 @@
                   <input type="submit" class="btn-flat #a1887f brown lighten-2" value="Request Meal">
                 </form>
               {% endif %}
-            </td>
+              </td>
             </tr>
           {% endfor %}
+          {% if meals.count > 2 %}
+            <tr id="see_more_or_less"><td>See More...</td></tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
   </div>
 </div>
 <hr>
+<script>
+    var expand = document.getElementById('see_more_or_less');
+    if (expand) {
+      expand.onclick = function (){
+        var seeAllEl = document.getElementsByClassName('meal_row');
+        for(var i =2; i< seeAllEl.length; i++){
+          if(expand.textContent == "See More..."){
+            seeAllEl[i].style.display="";
+          } else {
+            seeAllEl[i].style.display="none";
+          }
+        }
+        if(expand.textContent == "See More..."){
+          expand.textContent = "See Less...";
+        } else {
+          expand.textContent = "See More...";
+        }
+      };
+    }
+</script>
 {% endblock %}
