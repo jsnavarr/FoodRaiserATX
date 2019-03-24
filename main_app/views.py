@@ -5,14 +5,14 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from datetime import date
+import datetime
 import uuid
 import boto3
 from .models import Company, Meal, Photo
 from .forms import MealForm
 
-S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
-BUCKET = 'foodraiseratx'
+S3_BASE_URL = 'https://s3.us-east-1.amazonaws.com/'
+BUCKET = 'foodraiseratxbucket'
 
 def home(request):
   return render(request, 'home.html')
@@ -35,6 +35,7 @@ def companies_detail(request):
     print('company: ', company)
     if company.role == 'FoodGiver':
       company_meals = Meal.objects.filter(company_id=company.id)
+      company_meals = company_meals.filter(available_on__gte = datetime.datetime.now())
       req_meals = None
     else:
       company_meals = Meal.objects.filter(available=True)
